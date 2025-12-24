@@ -1,178 +1,160 @@
-import React, { useState, useEffect } from 'react';
-import { ExternalLink, ShieldCheck, ShieldAlert, CheckCircle, Info, Trash2, ListFilter, AlertTriangle } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Srauto Valymo Įrankis</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React and Babel for browser execution -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .checked-item { opacity: 0.5; background-color: #f0fdf4 !important; border-color: #bbf7d0 !important; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <div id="root"></div>
 
-const App = () => {
-  const [accounts, setAccounts] = useState([
-    { id: 1, name: "Artūras Orlauskas", type: "Asmuo", role: "OpTV, Šeimų sąjūdis", link: "https://www.facebook.com/arturas.orlauskas.9", status: "active" },
-    { id: 2, name: "Rūta Janutienė", type: "Asmuo", role: "OpTV įkūrėja", link: "https://www.facebook.com/ruta.janutiene", status: "active" },
-    { id: 3, name: "OpTV Plius", type: "Puslapis", role: "Pagrindinis vaizdo turinys", link: "https://www.facebook.com/OpTVPlius", status: "active" },
-    { id: 4, name: "Eduardas Vaitkus", type: "Asmuo", role: "Prokremliška retorika", link: "https://www.facebook.com/Vaitkus.Eduardas", status: "active" },
-    { id: 5, name: "Jolanta Blažytė", type: "Asmuo", role: "Nuomonės formuotoja", link: "https://www.facebook.com/jblazyte", status: "active" },
-    { id: 6, name: "Vakaro žinios", type: "Puslapis", role: "Respublikos grupė", link: "https://www.facebook.com/vakarozinios.lt", status: "active" },
-    { id: 7, name: "Maksimalietis (M. Gabrilavičius)", type: "Asmuo", role: "Minfo.lt savininkas", link: "https://www.facebook.com/maksimalietis", status: "active" },
-    { id: 8, name: "Minfo.lt", type: "Puslapis", role: "Dezinformacijos portalas", link: "https://www.facebook.com/minfo.lt", status: "active" },
-    { id: 9, name: "Algimantas Rusteika", type: "Asmuo", role: "Šeimų sąjūdžio autorius", link: "https://www.facebook.com/algimantas.rusteika", status: "active" },
-    { id: 10, name: "Lietuvos šeimų sąjūdis", type: "Puslapis", role: "Organizacija", link: "https://www.facebook.com/seimusajudis2021", status: "active" },
-    { id: 11, name: "Vaidas Žemaitis", type: "Asmuo", role: "Būkime vieningi", link: "https://www.facebook.com/vaidas.zemaitis.73", status: "active" },
-    { id: 12, name: "infa.lt", type: "Puslapis", role: "Dezinformacijos portalas", link: "https://www.facebook.com/infa.lt", status: "active" },
-    { id: 13, name: "Laisvas laikraštis", type: "Puslapis", role: "L. Ragelskio leidinys", link: "https://www.facebook.com/laisvaslaikrastis", status: "active" },
-    { id: 14, name: "Vitas Tomkus", type: "Asmuo", role: "Respublikos leidėjas", link: "https://www.facebook.com/vitas.tomkus", status: "active" },
-    { id: 15, name: "Žydrūnas Savickas", type: "Asmuo", role: "Sąmokslo teorijų sklaida", link: "https://www.facebook.com/zydrunas.savickas", status: "active" },
-    { id: 16, name: "Petras Gražulis", type: "Asmuo", role: "Politikas / Marginalas", link: "https://www.facebook.com/petras.grazulis", status: "active" },
-    { id: 17, name: "Mindaugas Puidokas", type: "Asmuo", role: "Politikas", link: "https://www.facebook.com/PuidokasMindaugas", status: "active" },
-    { id: 18, name: "Nida Vasiliauskaitė", type: "Asmuo", role: "Partija 'Antraštė'", link: "https://www.facebook.com/Nida.Vasiliauskaite", status: "active" },
-    { id: 19, name: "Knygnešys (A. Kandrotas)", type: "Puslapis", role: "Celofano kanalas", link: "https://www.facebook.com/knygnesys.antanas", status: "active" },
-    { id: 20, name: "77.lt (Gali neveikti)", type: "Puslapis", role: "Blokuojamas portalas", link: "https://www.facebook.com/77.lt", status: "broken" }
-  ]);
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-  const [blockedIds, setBlockedIds] = useState([]);
-  const [filter, setFilter] = useState('all');
+        const App = () => {
+            const [accounts] = useState([
+                { id: 1, name: "Artūras Orlauskas", type: "Asmuo", role: "OpTV, Šeimų sąjūdis", link: "https://www.facebook.com/arturas.orlauskas.9", status: "active" },
+                { id: 2, name: "Rūta Janutienė", type: "Asmuo", role: "OpTV įkūrėja", link: "https://www.facebook.com/ruta.janutiene", status: "active" },
+                { id: 3, name: "OpTV Plius", type: "Puslapis", role: "Pagrindinis vaizdo turinys", link: "https://www.facebook.com/OpTVPlius", status: "active" },
+                { id: 4, name: "Eduardas Vaitkus", type: "Asmuo", role: "Prokremliška retorika", link: "https://www.facebook.com/Vaitkus.Eduardas", status: "active" },
+                { id: 5, name: "Jolanta Blažytė", type: "Asmuo", role: "Nuomonės formuotoja", link: "https://www.facebook.com/jblazyte", status: "active" },
+                { id: 6, name: "Vakaro žinios", type: "Puslapis", role: "Respublikos grupė", link: "https://www.facebook.com/vakarozinios.lt", status: "active" },
+                { id: 7, name: "Maksimalietis (M. Gabrilavičius)", type: "Asmuo", role: "Minfo.lt savininkas", link: "https://www.facebook.com/maksimalietis", status: "active" },
+                { id: 8, name: "Minfo.lt", type: "Puslapis", role: "Dezinformacijos portalas", link: "https://www.facebook.com/minfo.lt", status: "active" },
+                { id: 9, name: "Algimantas Rusteika", type: "Asmuo", role: "Šeimų sąjūdžio autorius", link: "https://www.facebook.com/algimantas.rusteika", status: "active" },
+                { id: 10, name: "Lietuvos šeimų sąjūdis", type: "Puslapis", role: "Organizacija", link: "https://www.facebook.com/seimusajudis2021", status: "active" },
+                { id: 11, name: "Vaidas Žemaitis", type: "Asmuo", role: "Būkime vieningi", link: "https://www.facebook.com/vaidas.zemaitis.73", status: "active" },
+                { id: 12, name: "infa.lt", type: "Puslapis", role: "Dezinformacijos portalas", link: "https://www.facebook.com/infa.lt", status: "active" },
+                { id: 13, name: "Laisvas laikraštis", type: "Puslapis", role: "L. Ragelskio leidinys", link: "https://www.facebook.com/laisvaslaikrastis", status: "active" },
+                { id: 14, name: "Vitas Tomkus", type: "Asmuo", role: "Respublikos leidėjas", link: "https://www.facebook.com/vitas.tomkus", status: "active" },
+                { id: 15, name: "Žydrūnas Savickas", type: "Asmuo", role: "Sąmokslo teorijų sklaida", link: "https://www.facebook.com/zydrunas.savickas", status: "active" },
+                { id: 16, name: "Petras Gražulis", type: "Asmuo", role: "Politikas / Marginalas", link: "https://www.facebook.com/petras.grazulis", status: "active" },
+                { id: 17, name: "Mindaugas Puidokas", type: "Asmuo", role: "Politikas", link: "https://www.facebook.com/PuidokasMindaugas", status: "active" },
+                { id: 18, name: "Nida Vasiliauskaitė", type: "Asmuo", role: "Partija 'Antraštė'", link: "https://www.facebook.com/Nida.Vasiliauskaite", status: "active" },
+                { id: 19, name: "Knygnešys (A. Kandrotas)", type: "Puslapis", role: "Celofano kanalas", link: "https://www.facebook.com/knygnesys.antanas", status: "active" }
+            ]);
 
-  // Load progress from local memory (not persistence but helpful for session)
-  const toggleBlocked = (id) => {
-    if (blockedIds.includes(id)) {
-      setBlockedIds(blockedIds.filter(item => item !== id));
-    } else {
-      setBlockedIds([...blockedIds, id]);
-    }
-  };
+            const [blockedIds, setBlockedIds] = useState([]);
+            const [filter, setFilter] = useState('all');
 
-  const filteredAccounts = accounts.filter(acc => {
-    if (filter === 'blocked') return blockedIds.includes(acc.id);
-    if (filter === 'pending') return !blockedIds.includes(acc.id);
-    return true;
-  });
+            const toggleBlocked = (id) => {
+                setBlockedIds(prev => 
+                    prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+                );
+            };
 
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 p-4 font-sans">
-      <div className="max-w-2xl mx-auto">
-        
-        {/* Header */}
-        <header className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center p-3 bg-red-100 rounded-full mb-4">
-            <ShieldAlert className="text-red-600 w-8 h-8" />
-          </div>
-          <h1 className="text-3xl font-bold text-slate-800">Srauto Valymas</h1>
-          <p className="text-slate-600 mt-2">
-            [Inference] Lietuvos VSD ir faktų tikrintojų nustatytas propagandos tinklas.
-          </p>
-        </header>
+            const filteredAccounts = accounts.filter(acc => {
+                if (filter === 'blocked') return blockedIds.includes(acc.id);
+                if (filter === 'pending') return !blockedIds.includes(acc.id);
+                return true;
+            });
 
-        {/* Stats & Controls */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <p className="text-sm text-slate-500 uppercase font-semibold tracking-wider">Progresas</p>
-              <h2 className="text-2xl font-bold text-slate-800">
-                {blockedIds.length} / {accounts.length} <span className="text-sm font-normal text-slate-400">užblokuota</span>
-              </h2>
-            </div>
-            <div className="flex gap-2">
-              <select 
-                value={filter} 
-                onChange={(e) => setFilter(e.target.value)}
-                className="bg-slate-100 border-none rounded-lg px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="all">Visi</option>
-                <option value="pending">Liko</option>
-                <option value="blocked">Užblokuoti</option>
-              </select>
-            </div>
-          </div>
+            return (
+                <div className="min-h-screen p-4 md:p-8">
+                    <div className="max-w-3xl mx-auto">
+                        <header className="text-center mb-10">
+                            <h1 className="text-4xl font-extrabold text-slate-800 tracking-tight mb-2">Srauto Valymas</h1>
+                            <p className="text-slate-500">Sistemingas propagandinių šaltinių blokavimo sąrašas</p>
+                        </header>
 
-          <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
-            <div 
-              className="bg-blue-600 h-full transition-all duration-500" 
-              style={{ width: `${(blockedIds.length / accounts.length) * 100}%` }}
-            ></div>
-          </div>
-        </div>
+                        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 mb-8">
+                            <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                                <div>
+                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Progresas</div>
+                                    <div className="text-3xl font-black text-slate-800">
+                                        {blockedIds.length} / {accounts.length} 
+                                        <span className="text-lg font-medium text-slate-400 ml-2">atlikta</span>
+                                    </div>
+                                </div>
+                                <select 
+                                    value={filter} 
+                                    onChange={(e) => setFilter(e.target.value)}
+                                    className="w-full md:w-auto bg-slate-100 border-none rounded-xl px-4 py-3 font-bold text-slate-700 focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="all">Visi šaltiniai</option>
+                                    <option value="pending">Liko užblokuoti</option>
+                                    <option value="blocked">Jau užblokuoti</option>
+                                </select>
+                            </div>
+                            <div className="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
+                                <div 
+                                    className="bg-blue-600 h-full transition-all duration-700 ease-out" 
+                                    style={{ width: `${(blockedIds.length / accounts.length) * 100}%` }}
+                                ></div>
+                            </div>
+                        </div>
 
-        {/* Instructions */}
-        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg">
-          <div className="flex">
-            <Info className="text-blue-500 mr-3 shrink-0" />
-            <div className="text-sm text-blue-800">
-              <p className="font-bold mb-1">Kaip blokuoti:</p>
-              <ol className="list-decimal ml-4 space-y-1">
-                <li>Spauskite <strong>„Atidaryti FB“</strong>.</li>
-                <li>Profilio puslapyje spauskite <strong>tris taškus (...)</strong> po viršelio nuotrauka.</li>
-                <li>Pasirinkite <strong>„Block“</strong> ir patvirtinkite.</li>
-                <li>Grįžkite čia ir pažymėkite kaip sutvarkytą.</li>
-              </ol>
-            </div>
-          </div>
-        </div>
+                        <div className="space-y-4">
+                            {filteredAccounts.map(acc => (
+                                <div 
+                                    key={acc.id} 
+                                    className={`flex items-center justify-between p-5 rounded-2xl border transition-all duration-300 ${
+                                        blockedIds.includes(acc.id) ? 'checked-item' : 'bg-white border-slate-200 shadow-sm hover:shadow-md'
+                                    }`}
+                                >
+                                    <div className="flex-1 pr-4">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="font-bold text-lg text-slate-800">{acc.name}</span>
+                                            <span className={`text-[10px] px-2 py-0.5 rounded-md font-black uppercase ${
+                                                acc.type === 'Puslapis' ? 'bg-indigo-100 text-indigo-600' : 'bg-blue-100 text-blue-600'
+                                            }`}>
+                                                {acc.type}
+                                            </span>
+                                        </div>
+                                        <p className="text-sm text-slate-500 font-medium">{acc.role}</p>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <a 
+                                            href={acc.link} 
+                                            target="_blank" 
+                                            className="bg-slate-900 text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-slate-700 transition-colors inline-flex items-center gap-2"
+                                        >
+                                            Atidaryti <i data-lucide="external-link" className="w-4 h-4"></i>
+                                        </a>
+                                        <button 
+                                            onClick={() => toggleBlocked(acc.id)}
+                                            className={`p-3 rounded-xl border transition-all ${
+                                                blockedIds.includes(acc.id) 
+                                                ? 'bg-emerald-500 border-emerald-500 text-white' 
+                                                : 'bg-white border-slate-300 text-slate-300 hover:text-emerald-500 hover:border-emerald-500'
+                                            }`}
+                                        >
+                                            <i data-lucide="check-circle-2" className="w-6 h-6"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
 
-        {/* Account List */}
-        <div className="space-y-3">
-          {filteredAccounts.map((acc) => (
-            <div 
-              key={acc.id}
-              className={`group flex items-center justify-between p-4 rounded-xl border transition-all ${
-                blockedIds.includes(acc.id) 
-                ? 'bg-emerald-50 border-emerald-200 opacity-60' 
-                : 'bg-white border-slate-200 hover:border-blue-300 shadow-sm'
-              }`}
-            >
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className={`font-bold ${blockedIds.includes(acc.id) ? 'text-emerald-800' : 'text-slate-800'}`}>
-                    {acc.name}
-                  </h3>
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter ${
-                    acc.type === 'Puslapis' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
-                  }`}>
-                    {acc.type}
-                  </span>
-                  {acc.status === 'broken' && (
-                    <AlertTriangle className="w-3 h-3 text-amber-500" title="Gali būti nepasiekiamas" />
-                  )}
+                        <footer className="mt-16 text-center text-slate-400 text-sm">
+                            <p>Duomenys surinkti iš viešų dezinformacijos stebėsenos šaltinių.</p>
+                            <p className="mt-1">© 2025 Srauto Valymas</p>
+                        </footer>
+                    </div>
                 </div>
-                <p className="text-xs text-slate-500 mt-0.5 font-medium">{acc.role}</p>
-              </div>
+            );
+        };
 
-              <div className="flex items-center gap-2">
-                <a 
-                  href={acc.link} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-xs font-bold bg-slate-900 text-white px-3 py-2 rounded-lg hover:bg-slate-700 transition-colors"
-                >
-                  Atidaryti FB <ExternalLink size={12} />
-                </a>
-                
-                <button
-                  onClick={() => toggleBlocked(acc.id)}
-                  className={`p-2 rounded-lg border transition-all ${
-                    blockedIds.includes(acc.id)
-                    ? 'bg-emerald-600 border-emerald-600 text-white'
-                    : 'bg-white border-slate-300 text-slate-400 hover:text-emerald-600 hover:border-emerald-600'
-                  }`}
-                  title={blockedIds.includes(acc.id) ? "Atšaukti" : "Pažymėti kaip užblokuotą"}
-                >
-                  <CheckCircle size={20} />
-                </button>
-              </div>
-            </div>
-          ))}
-          
-          {filteredAccounts.length === 0 && (
-            <div className="text-center py-12 text-slate-400 italic">
-              Šioje kategorijoje įrašų nėra.
-            </div>
-          )}
-        </div>
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
 
-        {/* Footer info */}
-        <footer className="mt-12 mb-8 text-center text-slate-400 text-xs">
-          <p>[Unverified] Duomenys surinkti iš viešų faktų tikrinimo šaltinių.</p>
-          <p className="mt-1">Paskyrų prieinamumas tiesiogiai priklauso nuo „Facebook“ taisyklių.</p>
-        </footer>
-      </div>
-    </div>
-  );
-};
-
-export default App;
+        // Initialize icons after React render
+        setTimeout(() => {
+            lucide.createIcons();
+        }, 500);
+    </script>
+</body>
+</html>
 
