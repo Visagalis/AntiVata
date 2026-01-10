@@ -3,124 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Srauto Valymas v2</title>
+    <title>FB Profilių Blokavimo Pagalba</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .blocked-row { opacity: 0.4; filter: grayscale(1); }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+        }
+        .tap-target {
+            min-height: 60px;
+        }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
-    <div id="root"></div>
+<body class="text-gray-800">
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-lg flex flex-col">
+        
+        <!-- Header -->
+        <header class="bg-blue-600 text-white p-4 sticky top-0 z-10 shadow-md">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved"></i> Profilio Valymas
+            </h1>
+            <p class="text-blue-100 text-sm mt-1">Spauskite, kad atidarytumėte ir užblokuotumėte.</p>
+            
+            <!-- Progress Bar -->
+            <div class="mt-3 bg-blue-800 rounded-full h-2.5 w-full">
+                <div id="progressBar" class="bg-green-400 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between text-xs mt-1 text-blue-100">
+                <span id="progressText">0 / 0</span>
+                <button onclick="resetProgress()" class="underline hover:text-white">Išvalyti istoriją</button>
+            </div>
+        </header>
 
-        const App = () => {
-            // [Unverified] Nuorodos surinktos pagal paskutinę žinomą aktyvią būseną.
-            const [accounts, setAccounts] = useState([
-                { id: 'z1', name: "Remigijus Žemaitaitis", type: "Politikas", role: "Partija 'Nemuno aušra'", link: "https://www.facebook.com/r.zemaitaitis", isSearch: false },
-                { id: '1', name: "Artūras Orlauskas", type: "Puslapis", role: "OpTV, marginalus turinis", link: "https://www.facebook.com/Orlauskas.Arturas", isSearch: false },
-                { id: '2', name: "Rūta Janutienė", type: "Puslapis", role: "OpTV įkūrėja", link: "https://www.facebook.com/JanutieneRuta", isSearch: false },
-                { id: '4', name: "Eduardas Vaitkus", type: "Puslapis", role: "Prokremliška retorika", link: "https://www.facebook.com/Vaitkus.Eduardas", isSearch: false },
-                { id: '5', name: "Jolanta Blažytė", type: "Asmeninis", role: "Verslininkė, kritika", link: "https://www.facebook.com/jblazyte", isSearch: false },
-                { id: '16', name: "Petras Gražulis", type: "Puslapis", role: "Politikas", link: "https://www.facebook.com/petras.grazulis", isSearch: false },
-                { id: '15', name: "Žydrūnas Savickas", type: "Puslapis", role: "Oficialus sportininko puslapis", link: "https://www.facebook.com/ZydrunasSavickasOfficial", isSearch: false },
-                { id: '17', name: "Mindaugas Puidokas", type: "Puslapis", role: "Politikas", link: "https://www.facebook.com/PuidokasMindaugas", isSearch: false },
-                { id: '10', name: "Lietuvos šeimų sąjūdis", type: "Puslapis", role: "Organizacija", link: "https://www.facebook.com/seimusajudis2021", isSearch: false },
-                { id: '6', name: "Vakaro žinios", type: "Puslapis", role: "Naujienų portalas", link: "https://www.facebook.com/vakarozinios.lt", isSearch: false },
-                { id: '8', name: "Minfo.lt", type: "Puslapis", role: "Informacinis portalas", link: "https://www.facebook.com/minfo.lt", isSearch: false },
-                { id: '12', name: "infa.lt", type: "Puslapis", role: "Informacinis portalas", link: "https://www.facebook.com/infa.lt", isSearch: false },
-                { id: '3', name: "OpTV (Paieška)", type: "Paieška", role: "Jei puslapis ištrintas", link: "https://www.facebook.com/search/top?q=OpTV", isSearch: true },
-                { id: '13', name: "Laisvas laikraštis (Paieška)", type: "Paieška", role: "L. Ragelskio tinklas", link: "https://www.facebook.com/search/top?q=Laisvas%20laikra%C5%A1tis", isSearch: true },
-                { id: '14', name: "Vitas Tomkus (Paieška)", type: "Paieška", role: "Respublikos leidėjas", link: "https://www.facebook.com/search/top?q=Vitas%20Tomkus", isSearch: true },
-                { id: '19', name: "Celofanas / Knygnešys (Paieška)", type: "Paieška", role: "A. Kandrotas", link: "https://www.facebook.com/search/top?q=Knygne%C5%A1ys", isSearch: true }
-            ]);
+        <!-- Instructions -->
+        <div class="p-4 bg-yellow-50 border-b border-yellow-100 text-sm text-yellow-800 flex gap-3">
+            <i class="fa-solid fa-circle-info mt-1"></i>
+            <div>
+                <strong>Kaip naudoti:</strong>
+                <ol class="list-decimal ml-4 mt-1 space-y-1">
+                    <li>Paspauskite ant vardo sąraše.</li>
+                    <li>Atsidariusiame FB profilyje spauskite <strong class="whitespace-nowrap">... (Daugiau)</strong>.</li>
+                    <li>Pasirinkite <strong class="text-red-600">Blokuoti (Block)</strong>.</li>
+                    <li>Grįžkite čia – profilis bus pažymėtas žaliai.</li>
+                </ol>
+            </div>
+        </div>
 
-            const [blockedIds, setBlockedIds] = useState([]);
+        <!-- List Container -->
+        <main id="profileList" class="flex-1 p-4 space-y-3 pb-10">
+            <!-- Items will be injected here via JS -->
+        </main>
 
-            const toggleBlock = (id) => {
-                setBlockedIds(prev => 
-                    prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-                );
-            };
+        <footer class="p-4 text-center text-gray-400 text-xs bg-gray-50 border-t">
+            Sąrašas sugeneruotas pagal vartotojo užklausą.
+        </footer>
+    </div>
 
-            return (
-                <div className="max-w-2xl mx-auto py-10 px-4">
-                    <header className="mb-10 text-center">
-                        <h1 className="text-3xl font-extrabold text-red-600 mb-2">SRAUTO VALYMAS</h1>
-                        <p className="text-gray-500 text-sm">[Unverified] Atnaujintas blokavimo sąrašas (2025 m. gruodis)</p>
-                    </header>
+    <script>
+        // Data List
+        const profiles = [
+            { name: "Rūta Janutienė", url: "https://www.facebook.com/ruta.janutiene" },
+            { name: "Eduardas Vaitkus", url: "https://www.facebook.com/Vaitkus.Eduardas" },
+            { name: "Vaidas Žemaitis", url: "https://www.facebook.com/vaidas.zemaitis.73" },
+            { name: "Nida Vasiliauskaitė", url: "https://www.facebook.com/Nida.Vasiliauskaite" },
+            { name: "Artūras Orlauskas", url: "https://www.facebook.com/arturas.orlauskas.9" },
+            { name: "Jolanta Blažytė", url: "https://www.facebook.com/jolanta.blazyte.54/" },
+            { name: "Nendrė Černiauskienė", url: "https://www.facebook.com/nendre.cerniauskiene" },
+            { name: "Respublika.lt", url: "https://www.facebook.com/Respublika.lt" },
+            { name: "Raimondas Grinevičius", url: "https://www.facebook.com/raimondas.grinevicius" },
+            { name: "Algimantas Rusteika", url: "https://www.facebook.com/algimantas.rusteika" },
+            { name: "M.G. Maksimalietis", url: "https://www.facebook.com/share/1JMRK1EhQh/" },
+            { name: "Minfo", url: "https://www.facebook.com/share/1ACrX83gCJ/" },
+            { name: "Remigijus Žemaitaitis", url: "https://www.facebook.com/share/1MgsFQhwNK/" },
+            { name: "Šimaitis", url: "https://www.facebook.com/share/1Bkr7KDihf/" },
+            { name: "Gorienė", url: "https://www.facebook.com/share/17diLTYjb7/" },
+            { name: "Povilas Gylys", url: "https://www.facebook.com/share/19ws1Ht64S/" },
+            { name: "Oli", url: "https://www.facebook.com/share/1AecQd5XUB/" },
+            { name: "Kęstutis Skrebys", url: "https://www.facebook.com/share/1AKxrgNJYc/" },
+            { name: "Šveikauskas", url: "https://www.facebook.com/share/1Bw1iGVkoA/" },
+            { name: "Celofanas Live", url: "https://www.facebook.com/share/1898TWzdZe/" },
+            { name: "Baranauskas", url: "https://www.facebook.com/share/1AwUJFHM9q/" },
+            { name: "Žydrūnas Savickas", url: "https://www.facebook.com/share/1KPrDDNsJd/" },
+            { name: "Jurga Lago", url: "https://www.facebook.com/share/1BrXaRobsX/" },
+            { name: "Laurynas Ragelskis", url: "https://www.facebook.com/share/1AJYzcCUrL/" },
+            { name: "Erika Švenčionienė", url: "https://www.facebook.com/share/1DUyaHdHsV/" },
+            { name: "Kazimieras Juraitis", url: "https://www.facebook.com/share/1CtMcGj5pA/" },
+            { name: "Gintaras Lunskis", url: "https://www.facebook.com/share/1Fq72YeuUg/" },
+            { name: "Ugnius Kiguolis", url: "https://www.facebook.com/share/1ASHiHPEee/" },
+            { name: "Ginekologas Abraitis", url: "https://www.facebook.com/share/15uUBEREpt/" },
+            { name: "Arnas Klivečka", url: "https://www.facebook.com/share/1Bg5Numoy4/" },
+            { name: "Gintaras Furmanavičius", url: "https://www.facebook.com/gintaras.furmanavicius/" },
+            { name: "Grafas Liutkevičius", url: "https://www.facebook.com/Grafas.LT/" },
+            { name: "Ignotas Adomavičius", url: "https://www.facebook.com/share/1BxuxDNtqT/" },
+            { name: "Aistis Mickevičius", url: "https://www.facebook.com/share/14Uo3QC2QEH/" },
+            { name: "Irma Gajauskaitė", url: "https://www.facebook.com/share/182uEyzBak/" },
+            { name: "Viktor Uspaskich", url: "https://www.facebook.com/share/16FBGx5waN/" },
+            { name: "Valdas Tutkus", url: "https://www.facebook.com/share/1DsvPaamds/" },
+            { name: "77news", url: "https://www.facebook.com/share/17sZ447r6V/" },
+            { name: "77žinios", url: "https://www.facebook.com/share/19U6EBjUnQ/" },
+            { name: "Petras Gražulis", url: "https://www.facebook.com/share/1brJWtBn5E/" },
+            { name: "Aidas Gedvilas", url: "https://www.facebook.com/share/1HZ8H97VWi/" }
+        ];
 
-                    <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
-                        <div className="p-6 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-                            <span className="font-bold text-gray-700">Progresas: {blockedIds.length} / {accounts.length}</span>
-                            <div className="w-32 bg-gray-200 h-2 rounded-full overflow-hidden">
-                                <div 
-                                    className="bg-red-500 h-full transition-all duration-500" 
-                                    style={{ width: `${(blockedIds.length / accounts.length) * 100}%` }}
-                                ></div>
-                            </div>
+        // State Management
+        const STORAGE_KEY = 'blocked_profiles_v1';
+        let visitedUrls = new Set();
+
+        function loadState() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                visitedUrls = new Set(JSON.parse(stored));
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify([...visitedUrls]));
+            updateProgress();
+        }
+
+        function markAsVisited(url) {
+            visitedUrls.add(url);
+            saveState();
+            renderList();
+        }
+
+        function resetProgress() {
+            if(confirm("Ar tikrai norite išvalyti pažymėjimų istoriją?")) {
+                visitedUrls.clear();
+                saveState();
+                renderList();
+            }
+        }
+
+        function updateProgress() {
+            const total = profiles.length;
+            const visited = visitedUrls.size;
+            const percent = (visited / total) * 100;
+
+            document.getElementById('progressBar').style.width = `${percent}%`;
+            document.getElementById('progressText').innerText = `${visited} iš ${total} peržiūrėta`;
+        }
+
+        function renderList() {
+            const container = document.getElementById('profileList');
+            container.innerHTML = '';
+
+            profiles.forEach((profile, index) => {
+                const isVisited = visitedUrls.has(profile.url);
+                
+                const card = document.createElement('a');
+                card.href = profile.url;
+                card.target = "_blank";
+                card.rel = "noopener noreferrer";
+                card.onclick = () => markAsVisited(profile.url);
+                
+                // Styling classes
+                let baseClasses = "tap-target block p-4 rounded-lg shadow-sm border transition-all duration-200 flex items-center justify-between group ";
+                
+                if (isVisited) {
+                    baseClasses += "bg-green-50 border-green-200 opacity-75 hover:opacity-100";
+                } else {
+                    baseClasses += "bg-white border-gray-200 hover:border-blue-400 hover:shadow-md active:bg-blue-50";
+                }
+
+                card.className = baseClasses;
+
+                // Content
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full ${isVisited ? 'bg-green-200 text-green-700' : 'bg-blue-100 text-blue-600'}">
+                            ${isVisited ? '<i class="fa-solid fa-check"></i>' : `<span class="font-bold text-sm">${index + 1}</span>`}
                         </div>
-
-                        <div className="divide-y divide-gray-100">
-                            {accounts.map(acc => (
-                                <div key={acc.id} className={`p-4 flex items-center justify-between transition-all ${blockedIds.includes(acc.id) ? 'blocked-row' : ''}`}>
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-2">
-                                            <h3 className="font-bold text-gray-800">{acc.name}</h3>
-                                            <span className={`text-[10px] px-2 py-0.5 rounded font-black uppercase ${
-                                                acc.isSearch ? 'bg-amber-100 text-amber-600' : 'bg-blue-100 text-blue-600'
-                                            }`}>
-                                                {acc.type}
-                                            </span>
-                                        </div>
-                                        <p className="text-xs text-gray-400 mt-1">{acc.role}</p>
-                                    </div>
-                                    
-                                    <div className="flex items-center gap-2">
-                                        <a 
-                                            href={acc.link} 
-                                            target="_blank" 
-                                            className="bg-black text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-gray-800 flex items-center gap-1"
-                                        >
-                                            Atidaryti <i data-lucide="external-link" className="w-3 h-3"></i>
-                                        </a>
-                                        <button 
-                                            onClick={() => toggleBlock(acc.id)}
-                                            className={`p-2 rounded-xl border transition-colors ${
-                                                blockedIds.includes(acc.id) 
-                                                ? 'bg-green-500 border-green-500 text-white' 
-                                                : 'border-gray-300 text-gray-300 hover:border-green-500 hover:text-green-500'
-                                            }`}
-                                        >
-                                            <i data-lucide="check" className="w-5 h-5"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        <span class="font-medium text-lg ${isVisited ? 'text-gray-500 line-through decoration-green-500' : 'text-gray-800'}">
+                            ${profile.name}
+                        </span>
                     </div>
-
-                    <div className="mt-8 p-6 bg-amber-50 rounded-2xl border border-amber-200 text-xs text-amber-800">
-                        <p className="font-bold mb-2 uppercase tracking-wide">Patarimas:</p>
-                        <p>[Inference] Jei tiesioginė nuoroda rodo klaidą, vadinasi, paskyra yra laikinai deaktyvuota arba ištrinta „Facebook“ administracijos. Tokiu atveju naudokite „Paieška“ tipo nuorodas, kad rastumėte naujausią to šaltinio versiją.</p>
+                    <div class="text-gray-400 group-hover:text-blue-500">
+                        <i class="fa-solid fa-external-link-alt"></i>
                     </div>
-                </div>
-            );
-        };
+                `;
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+                container.appendChild(card);
+            });
+            updateProgress();
+        }
 
-        setTimeout(() => {
-            lucide.createIcons();
-        }, 500);
+        // Initialize
+        loadState();
+        renderList();
+
     </script>
 </body>
 </html>
